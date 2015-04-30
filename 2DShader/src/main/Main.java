@@ -1,36 +1,8 @@
 package main;
 
 import static org.lwjgl.input.Keyboard.*;
-import static org.lwjgl.opengl.GL11.GL_ALWAYS;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_EQUAL;
-import static org.lwjgl.opengl.GL11.GL_KEEP;
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_ONE;
-import static org.lwjgl.opengl.GL11.GL_PROJECTION;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_REPLACE;
-import static org.lwjgl.opengl.GL11.GL_STENCIL_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_STENCIL_TEST;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glColorMask;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glMatrixMode;
-import static org.lwjgl.opengl.GL11.glOrtho;
-import static org.lwjgl.opengl.GL11.glStencilFunc;
-import static org.lwjgl.opengl.GL11.glStencilOp;
-import static org.lwjgl.opengl.GL11.glVertex2f;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniform2f;
-import static org.lwjgl.opengl.GL20.glUniform3f;
-import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,6 +12,7 @@ import java.util.List;
 import loader.MapLoader;
 import loader.ShaderLoader;
 
+import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -51,9 +24,12 @@ import render.Window;
 public class Main {
 
 	private static final int WIDTH = 800, HEIGHT = 600;
-
-	public static void main(String[] args) {
+	
+	private static final String frag = "uniform vec2 lightLocation;\nuniform vec3 lightColor;\nuniform float screenHeight;\nvoid main() {\n	float distance = length(lightLocation - gl_FragCoord.xy);\n	float attenuation = 1.0 / distance;\n	vec4 color = vec4(attenuation, attenuation, attenuation, pow(attenuation, 3)) * vec4(lightColor, 1);\ngl_FragColor = color;\n}\n";
+	
+	public static void main(String[] args) throws FileNotFoundException, IOException, LWJGLException {
 		Window.startWindow(WIDTH, HEIGHT);
+		MapLoader.setUp();
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0, WIDTH, HEIGHT, 0, 1, -1);
@@ -63,7 +39,7 @@ public class Main {
 		menu();
 	}
 
-	public static void menu() {
+	public static void menu() throws LWJGLException {
 		while (!Display.isCloseRequested()) {
 			glClear(GL_COLOR_BUFFER_BIT);
 			if (isKeyDown(KEY_RETURN)) {
@@ -75,8 +51,8 @@ public class Main {
 		Window.stopWindow();
 	}
 
-	public static void arena() {
-		int shader = ShaderLoader.loadFragmentOnly("frag.glsl");
+	public static void arena() throws LWJGLException {
+		int shader = ShaderLoader.loadFragmentOnlySrc(frag);
 		List<Light> lights = new ArrayList<Light>();
 		List<Tri> tris = new ArrayList<>();
 		try {
@@ -101,6 +77,9 @@ public class Main {
 				player.x--;
 			if(isKeyDown(KEY_RIGHT))
 				player.x++;
+			for(Tri block : tris){
+				block.render();
+			}
 			{
 				glColorMask(false, false, false, false);
 				glStencilFunc(GL_ALWAYS, 1, 1);
@@ -242,4 +221,5 @@ public class Main {
 			Window.updateWindow();
 		}
 	}
+	
 }

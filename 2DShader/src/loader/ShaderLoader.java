@@ -44,4 +44,24 @@ public class ShaderLoader {
 		return shaderProgram;
 	}
 	
+	public static int loadFragmentOnlySrc(String frag){
+		int shaderProgram = glCreateProgram();
+		int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		StringBuilder fragmentShaderSource = new StringBuilder();
+
+		fragmentShaderSource.append(frag);
+
+		glShaderSource(fragmentShader, fragmentShaderSource);
+		glCompileShader(fragmentShader);
+		if (glGetShaderi(fragmentShader, GL_COMPILE_STATUS) == GL_FALSE) {
+			System.err.println("Fragment shader not compiled!");
+		}
+
+		glAttachShader(shaderProgram, fragmentShader);
+		glLinkProgram(shaderProgram);
+		glValidateProgram(shaderProgram);
+		glDeleteShader(fragmentShader);
+		return shaderProgram;
+	}
+	
 }
