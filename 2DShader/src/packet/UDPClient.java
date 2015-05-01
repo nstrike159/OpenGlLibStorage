@@ -1,5 +1,7 @@
 package packet;
 
+import interfaces.Book;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -27,8 +29,16 @@ public class UDPClient extends Thread{
 	public List<Vector4f> players = new ArrayList<Vector4f>();
 	public List<String> usernames = new ArrayList<String>();
 	
+	public List<Book> books = new ArrayList<Book>();
+	
 	private InetAddress ip;
 	private DatagramSocket socket;
+	
+	public static UDPClient debugClient(){
+		return new UDPClient();
+	}
+	
+	private UDPClient(){}
 	
 	public UDPClient(String ip){
 		try {
