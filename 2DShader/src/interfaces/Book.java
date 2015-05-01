@@ -1,6 +1,8 @@
 package interfaces;
 
 public interface Book {
+	/**Sets the state for when the book is checked in*/
+	public int setState(int State);
 	/**Get global ID*/
 	public long getISBN();
 	/**Returns value in $JC*/

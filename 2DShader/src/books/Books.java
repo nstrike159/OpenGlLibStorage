@@ -2,7 +2,6 @@ package books;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import interfaces.Book;
 public class Books implements Book{
 	private long duedate;
@@ -77,6 +76,12 @@ public class Books implements Book{
 	public double setCost(double costs) {
 		cost=costs;
 		return cost;
+	}
+
+	@Override
+	public int setState(int State) {
+		state=State;
+		return state;
 	}
 
 }
