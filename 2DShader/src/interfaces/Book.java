@@ -2,9 +2,9 @@ package interfaces;
 
 public interface Book {
 	/**Get global ID*/
-	public int getISBN();
+	public long getISBN();
 	/**Returns value in $JC*/
-	public int getCost();
+	public double getCost();
 	/**0 if available, otherwise is the human id*/
 	public int getState();
 	/**Returns a string array of each page*/
@@ -14,9 +14,11 @@ public interface Book {
 	/**Returns the genre of the book*/
 	public String getGenre();
 	/**Get the date and time when it was last checked out*/
-	public int getCheckOutTime();
+	public long getCheckOutTime();
 	/**Get date the book is due*/
-	public int getDueDate();
+	public long getDueDate();
 	/**Set date the book is due*/
-	public int setDueDate();
+	public long setDueDate(long time);
+	/**Sets the cost of the item*/
+	public double setCost(double cost);
 }
