@@ -2,7 +2,6 @@ package attribstorage;
 import java.util.List;
 
 public class PairedList<I,O>{
-	
 	private List<I> inputOne;
 	private List<O> inputTwo;
 	
