@@ -3,7 +3,6 @@ package render;
 import org.lwjgl.util.vector.Vector2f;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 
 public class Tri {
@@ -25,15 +24,15 @@ public class Tri {
 	}
 	
 	public void render(){
-		glEnable(GL_TEXTURE_2D);//TODO
-		glBindTexture(GL_TEXTURE_2D, texture);
-		int index = glGetAttribLocation(0, "");
+		//glEnable(GL_TEXTURE_2D);
+		//glBindTexture(GL_TEXTURE_2D, texture);
+		//int index = glGetAttribLocation(0, "textureCoord");
 		glBegin(GL_TRIANGLES);
-		glVertexAttrib2f(index, uva.x, uva.y);
+		//glVertexAttrib2f(index, uva.x, uva.y);
 		glVertex2f(a.x, a.y);
-		glTexCoord2f(uvb.x, uvb.y);
+		//glVertexAttrib2f(index, uvb.x, uvb.y);
 		glVertex2f(b.x, b.y);
-		glTexCoord2f(uvc.x, uvc.y);
+		//glVertexAttrib2f(index, uvc.x, uvc.y);
 		glVertex2f(c.x, c.y);
 		glEnd();
 	}

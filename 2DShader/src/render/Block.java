@@ -12,6 +12,13 @@ public class Block {
 		this.c = c;
 		this.d = d;
 	}
+	
+	public Block(float x, float y, float width, float height){
+		a = new Vector2f(x, y);
+		b = new Vector2f(x+width, y);
+		c = new Vector2f(x+width, y+height);
+		d = new Vector2f(x, y+height);
+	}
 
 	public Vector2f[] getVertices() {
 		return new Vector2f[] { new Vector2f(a.x, a.y), new Vector2f(b.x, b.y),
