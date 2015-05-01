@@ -19,6 +19,9 @@ public class Main {
 
 	public ArrayList<Light> lights = new ArrayList<Light>();
 	public ArrayList<Block> blocks = new ArrayList<Block>();
+	
+	int[] stateData;
+	private static final int stateDataLengths[] = {1};
 
 	private int fragmentShader;
 	private int shaderProgram;
@@ -98,20 +101,7 @@ public class Main {
 
 		shaderProgram = glCreateProgram();
 		fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		StringBuilder fragmentShaderSource = new StringBuilder();
-
-		try {
-			String line;
-			BufferedReader reader = new BufferedReader(new FileReader("shader.frag"));
-			while ((line = reader.readLine()) != null) {
-				fragmentShaderSource.append(line).append("\n");
-			}
-			reader.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String fragmentShaderSource = Shaders.lightShader;
 
 		glShaderSource(fragmentShader, fragmentShaderSource);
 		glCompileShader(fragmentShader);
@@ -138,6 +128,9 @@ public class Main {
 		if(prevState != state){
 			lights.clear();
 			blocks.clear();
+			stateData = new int[stateDataLengths[state]];//TODO:More State Data
+			for(int i = 0; i < stateData.length; i++)
+				stateData[i] = 0;
 		}
 		prevState = state;
 	}

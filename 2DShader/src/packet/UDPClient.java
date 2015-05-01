@@ -25,6 +25,7 @@ public class UDPClient extends Thread{
 	}
 	
 	public List<Vector4f> players = new ArrayList<Vector4f>();
+	public List<String> usernames = new ArrayList<String>();
 	
 	private InetAddress ip;
 	private DatagramSocket socket;

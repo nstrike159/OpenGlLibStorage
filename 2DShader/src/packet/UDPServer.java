@@ -12,9 +12,6 @@ import java.util.Map;
 
 import org.lwjgl.util.vector.Vector2f;
 
-import entity.Player;
-import attribstorage.PairedList;
-
 public class UDPServer extends Thread {
 
 	private DatagramSocket socket;
