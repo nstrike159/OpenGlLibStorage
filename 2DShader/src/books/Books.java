@@ -8,12 +8,13 @@ public class Books implements Book{
 	private long duedate;
 	private long checkoutdate;
 	private long ISBN=UUID.randomUUID().node();
+	private int state=0;
 	private double cost;
 	private String genre;
 	private String name="Spongebob's Life";
 	private String author="Patrick";
-	private String body="There was once a yellow sponge that lived in a pinaple under the sea. His best friend was named patrick who was a pink star fish living under a rock. ";
-	private int pagelength=800;
+	private String body="There was once a yellow sponge that lived in a pinaple under the sea. His best friend was named patrick who was a pink star fish living under a rock. He works at the krusty krab as a fry cook the best fry cook in bikini bottom to be exact. He works with a dull and drab quid named Squidward who just happens to live in the tiki head next to his home. Spongebob loves to try to play with Squidward";
+	private int pagelength=90;
 	@Override
 	public long getISBN() {
 		return ISBN;
@@ -21,14 +22,12 @@ public class Books implements Book{
 
 	@Override
 	public double getCost() {
-		// TODO Auto-generated method stub
 		return cost;
 	}
 
 	@Override
 	public int getState() {
-		// TODO Auto-generated method stub
-		return 0;
+		return state;
 	}
 
 	@Override
@@ -59,7 +58,7 @@ public class Books implements Book{
 
 	@Override
 	public long getCheckOutTime() {
-		return duedate;
+		return checkoutdate;
 	}
 
 	@Override
@@ -70,6 +69,7 @@ public class Books implements Book{
 	@Override
 	public long setDueDate(long time) {
 		duedate=time;
+		state=1;
 		return duedate;
 	}
 
