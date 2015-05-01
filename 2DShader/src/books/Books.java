@@ -13,7 +13,7 @@ public class Books implements Book{
 	private String genre;
 	private String name="Spongebob's Life";
 	private String author="Patrick";
-	private String body="There was once a yellow sponge that lived in a pinaple under the sea. His best friend was named patrick who was a pink star fish living under a rock. He works at the krusty krab as a fry cook the best fry cook in bikini bottom to be exact. He works with a dull and drab quid named Squidward who just happens to live in the tiki head next to his home. Spongebob loves to try to play with Squidward";
+	private String body="There was once a yellow sponge that lived in a pinaple under the sea. His best friend was patrick who was a pink star fish living under a rock. He works at the krusty krab as a fry cook the best fry cook in bikini bottom to be exact. He works with a dull and drab quid named Squidward who just happens to live in the tiki head next to his home. Spongebob loves to try to play with Squidward but genreally Squidward blows him off and tells him to go away instead of playing with him. He works for a stingy krab named 'Mr Krabs' who once denied Spongebob manager of the Krusty Krab 2 and spongebob gave king neptune his opinion of Mr Krabs who thought spongebob was going to back him up, but Spongebob instead decided to yell at him saying he should have gotten the manager of the Krusty Krab 2 which resulted in King Neptune almost burning Mr Krabs to death until spongebob offered to get his crown back and save the day. Mr Krabs has a teenage daughter named Perl that can flood anywhere in the sea just by crying.";
 	private int pagelength=90;
 	@Override
 	public long getISBN() {
