@@ -7,7 +7,7 @@ import interfaces.Book;
 public class Books implements Book{
 	private long duedate;
 	private long checkoutdate;
-	private long ISBN=UUID.randomUUID().node();
+	private long ISBN=UUID.randomUUID().getLeastSignificantBits();
 	private int state=0;
 	private double cost;
 	private String genre;
