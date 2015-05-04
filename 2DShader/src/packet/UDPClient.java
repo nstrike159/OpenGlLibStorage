@@ -10,13 +10,21 @@ import java.util.List;
 import entity.AABB;
 import entity.Player;
 
-public class UDPClient {
+public class UDPClient extends Thread{
 	private static final int port=19998;
-	private DatagramSocket UDP;
+	private static DatagramSocket UDP;
 	public Player[] players;
 	
 	public AABB[] map;
 	
+	@Override
+	public void run() {
+		
+	}
+	
+	private void recvUDP(){
+		
+	}
 	public String[] chat;
 	
 	public List<Book> books = new ArrayList<Book>();
@@ -27,7 +35,9 @@ public class UDPClient {
 		return client;
 	}
 	
-	private UDPClient(){}
+	private UDPClient(){
+		
+	}
 	
 	public UDPClient(String inet) throws SocketException{
 		UDP=new DatagramSocket(port);
