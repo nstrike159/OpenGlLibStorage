@@ -20,6 +20,8 @@ public class Main {
 
 	public final int width = 800;
 	public final int height = 600;
+	
+	private static final int start = 300, mult = 100;
 
 	public ArrayList<Light> lights = new ArrayList<Light>();
 	public ArrayList<Block> blocks = new ArrayList<Block>();
@@ -31,6 +33,10 @@ public class Main {
 	int[] stateData;
 	private static final int stateDataLengths[] = { 1, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0 };
+	
+	private static final String[] state0options = new String[]{
+		"Start Game", "Settings", "Quit"
+	};
 
 	private int fragmentShader;
 	private int shaderProgram;
@@ -39,6 +45,14 @@ public class Main {
 
 	private int state = 0;
 	private int prevState = -1;
+	/*
+	for (int i = 0; i < 4; i++) {
+					blocks.add(new Block(width / 2 - 100, 100 + i * 200, 200, 5));
+					blocks.add(new Block(width / 2 - 100, 150 + i * 200, 200, 5));
+					blocks.add(new Block(width / 2 - 100, 100 + i * 200, 5, 50));
+					blocks.add(new Block(width / 2 + 100, 100 + i * 200, 5, 50));
+				}
+	 */
 
 	private void render() {
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -54,7 +68,6 @@ public class Main {
 			}
 			glOrtho(0, width, height, 0, 1, -1);
 		}
-
 		if (dynlight != null) {
 			glColorMask(false, false, false, false);
 			glStencilFunc(GL_ALWAYS, 1, 1);
@@ -118,6 +131,79 @@ public class Main {
 			glDisable(GL_BLEND);
 			glUseProgram(0);
 			glClear(GL_STENCIL_BUFFER_BIT);
+		}
+		
+		if(state == 0){
+			for(int j = 0; j < 4; j++){
+				glColorMask(false, false, false, false);
+				glStencilFunc(GL_ALWAYS, 1, 1);
+				glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+				
+				int speed = 6;
+				
+				int buffer = 21;
+				
+				float kies = ((System.currentTimeMillis()/speed)%((height-(2*buffer))*2) > (height-(2*buffer)) ? (height-(2*buffer)) - (System.currentTimeMillis()/speed)%((height-(2*buffer))) : (System.currentTimeMillis()/speed)%((height-(2*buffer))*2))+buffer;
+
+				for (Block block : blocks) {
+					Vector2f[] vertices = block.getVertices();
+					for (int i = 0; i < vertices.length; i++) {
+						Vector2f currentVertex = vertices[i];
+						Vector2f nextVertex = vertices[(i + 1) % vertices.length];
+						Vector2f edge = Vector2f.sub(nextVertex, currentVertex,
+								null);
+						Vector2f normal = new Vector2f(edge.getY(), -edge.getX());
+						Vector2f lightToCurrent = Vector2f.sub(currentVertex,
+								new Vector2f((j > 1 ? j+1 : j)*(width/6)+width/6, kies), null);
+						if (Vector2f.dot(normal, lightToCurrent) > 0) {
+							Vector2f point1 = Vector2f.add(
+									currentVertex,
+									(Vector2f) Vector2f.sub(currentVertex,
+											new Vector2f((j > 1 ? j+1 : j)*(width/6)+width/6, kies), null).scale(800),
+									null);
+							Vector2f point2 = Vector2f.add(
+									nextVertex,
+									(Vector2f) Vector2f.sub(nextVertex,
+											new Vector2f((j > 1 ? j+1 : j)*(width/6)+width/6, kies), null).scale(800),
+									null);
+							glBegin(GL_QUADS);
+							{
+								glVertex2f(currentVertex.getX(),
+										currentVertex.getY());
+								glVertex2f(point1.getX(), point1.getY());
+								glVertex2f(point2.getX(), point2.getY());
+								glVertex2f(nextVertex.getX(), nextVertex.getY());
+							}
+							glEnd();
+						}
+					}
+				}
+
+				glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+				glStencilFunc(GL_EQUAL, 0, 1);
+				glColorMask(true, true, true, true);
+
+				glUseProgram(shaderProgram);
+				glUniform2f(glGetUniformLocation(shaderProgram, "lightLocation"),
+						(j > 1 ? j+1 : j)*(width/6)+width/6, height - kies);
+				glUniform3f(glGetUniformLocation(shaderProgram, "lightColor"),
+						2, 2, 5);
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_ONE, GL_ONE);
+
+				glBegin(GL_QUADS);
+				{
+					glVertex2f(0, 0);
+					glVertex2f(0, height);
+					glVertex2f(width, height);
+					glVertex2f(width, 0);
+				}
+				glEnd();
+
+				glDisable(GL_BLEND);
+				glUseProgram(0);
+				glClear(GL_STENCIL_BUFFER_BIT);
+			}
 		}
 
 		for (Light light : lights) {
@@ -194,7 +280,6 @@ public class Main {
 		}
 		Display.update();
 		Display.sync(60);
-		System.out.println(dynlight.location.x + " " + dynlight.location.y);
 	}
 
 	private void initialize() {
@@ -205,7 +290,6 @@ public class Main {
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
-		dynlight = new Light(new Vector2f(110, 0), 10, 10, 10);
 
 		client = UDPClient.debugClient();
 
@@ -262,10 +346,10 @@ public class Main {
 						10, 10));
 				lights.add(new Light(new Vector2f(21, height - 21), 10, 10, 10));
 				for (int i = 0; i < 4; i++) {
-					blocks.add(new Block(width / 2 - 100, 100+i*200, 200, 5));
-					blocks.add(new Block(width / 2 - 100, 150+i*200, 200, 5));
-					blocks.add(new Block(width / 2 - 100, 100+i*200, 5, 50));
-					blocks.add(new Block(width / 2 + 100, 100+i*200, 5, 50));
+					blocks.add(new Block(width / 2 - 100, start + i * 100, 200, 5));
+					blocks.add(new Block(width / 2 - 100, start + 50 + i * 100, 200, 5));
+					blocks.add(new Block(width / 2 - 100, start + i * 100, 5, 50));
+					blocks.add(new Block(width / 2 + 100, start + i * 100, 5, 50));
 				}
 			}
 		}
@@ -284,8 +368,9 @@ public class Main {
 		}
 		if (state == 0) {
 			if (dynlight == null)
-				dynlight = new Light(new Vector2f(width / 2 - 75, 0), 10, 10,
-						10);
+				dynlight = new Light(new Vector2f(width / 2 - 75, 0), 5, 2,
+						0);
+			
 			dynlight.location.x = width / 2 - 75;
 			dynlight.location.y = 125 + 200 * stateData[0];
 			if (isKeyDown(KEY_DOWN) && !keydown[KEY_DOWN]) {
@@ -302,7 +387,7 @@ public class Main {
 			if (!isKeyDown(KEY_UP)) {
 				keydown[KEY_UP] = false;
 			}
-			while(stateData[0] < 0)
+			while (stateData[0] < 0)
 				stateData[0] += 3;
 		}
 	}
