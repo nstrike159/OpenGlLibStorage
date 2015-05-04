@@ -14,6 +14,8 @@ import books.Books;
 import packet.UDPClient;
 import render.*;
 
+import static org.lwjgl.input.Keyboard.*;
+
 public class Main {
 
 	public final int width = 800;
@@ -21,7 +23,7 @@ public class Main {
 
 	public ArrayList<Light> lights = new ArrayList<Light>();
 	public ArrayList<Block> blocks = new ArrayList<Block>();
-	
+
 	public Light dynlight = null;
 
 	UDPClient client;
@@ -41,6 +43,7 @@ public class Main {
 	private void render() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		if (state == 6) {
+			glOrtho(0, width, 0, height, 1, -1);
 			Book book = client.books.get(heldBook);
 			glColor3f(1, 1, 1);
 			SimpleText.drawString(book.getTitle().split(";")[0] + " by "
@@ -49,9 +52,10 @@ public class Main {
 				SimpleText.drawString(book.getContents()[i], 50, height - 80
 						- 20 * i);
 			}
+			glOrtho(0, width, height, 0, 1, -1);
 		}
-		
-		if(dynlight != null){
+
+		if (dynlight != null) {
 			glColorMask(false, false, false, false);
 			glStencilFunc(GL_ALWAYS, 1, 1);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -70,11 +74,13 @@ public class Main {
 						Vector2f point1 = Vector2f.add(
 								currentVertex,
 								(Vector2f) Vector2f.sub(currentVertex,
-										dynlight.location, null).scale(800), null);
+										dynlight.location, null).scale(800),
+								null);
 						Vector2f point2 = Vector2f.add(
 								nextVertex,
 								(Vector2f) Vector2f.sub(nextVertex,
-										dynlight.location, null).scale(800), null);
+										dynlight.location, null).scale(800),
+								null);
 						glBegin(GL_QUADS);
 						{
 							glVertex2f(currentVertex.getX(),
@@ -113,7 +119,7 @@ public class Main {
 			glUseProgram(0);
 			glClear(GL_STENCIL_BUFFER_BIT);
 		}
-		
+
 		for (Light light : lights) {
 			glColorMask(false, false, false, false);
 			glStencilFunc(GL_ALWAYS, 1, 1);
@@ -188,6 +194,7 @@ public class Main {
 		}
 		Display.update();
 		Display.sync(60);
+		System.out.println(dynlight.location.x + " " + dynlight.location.y);
 	}
 
 	private void initialize() {
@@ -198,7 +205,7 @@ public class Main {
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
-		dynlight = new Light(new Vector2f(110,0), 10, 10, 10);
+		dynlight = new Light(new Vector2f(110, 0), 10, 10, 10);
 
 		client = UDPClient.debugClient();
 
@@ -220,7 +227,7 @@ public class Main {
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0, width, 0, height, 1, -1);
+		glOrtho(0, width, height, 0, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
 
 		glEnable(GL_STENCIL_TEST);
@@ -244,7 +251,7 @@ public class Main {
 				lights.add(new Light(new Vector2f(width - 21, height - 21), 10,
 						10, 10));
 				lights.add(new Light(new Vector2f(21, height - 21), 10, 10, 10));
-			}else if(state == 0){
+			} else if (state == 0) {
 				blocks.add(new Block(0, 0, width, 20));
 				blocks.add(new Block(0, height - 20, width, 20));
 				blocks.add(new Block(0, 20, 20, height - 40));
@@ -254,22 +261,49 @@ public class Main {
 				lights.add(new Light(new Vector2f(width - 21, height - 21), 10,
 						10, 10));
 				lights.add(new Light(new Vector2f(21, height - 21), 10, 10, 10));
-				blocks.add(new Block(width/2-100, 100, 200, 5));
-				blocks.add(new Block(width/2-100, 150, 200, 5));
-				blocks.add(new Block(width/2-100, 100, 5, 50));
-				blocks.add(new Block(width/2+100, 100, 5, 50));
-				
+				for (int i = 0; i < 4; i++) {
+					blocks.add(new Block(width / 2 - 100, 100+i*200, 200, 5));
+					blocks.add(new Block(width / 2 - 100, 150+i*200, 200, 5));
+					blocks.add(new Block(width / 2 - 100, 100+i*200, 5, 50));
+					blocks.add(new Block(width / 2 + 100, 100+i*200, 5, 50));
+				}
 			}
 		}
 		logic();
 		prevState = state;
 	}
 
+	private boolean[] keydown = new boolean[256];
+	private boolean set = false;
+
 	private void logic() {
+		if (!set) {
+			for (int i = 0; i < keydown.length; i++)
+				keydown[i] = false;
+			set = true;
+		}
 		if (state == 0) {
-			if(dynlight == null)
-				dynlight = new Light(new Vector2f(120,0), 10, 10, 10);
-			dynlight.location.y = 125;
+			if (dynlight == null)
+				dynlight = new Light(new Vector2f(width / 2 - 75, 0), 10, 10,
+						10);
+			dynlight.location.x = width / 2 - 75;
+			dynlight.location.y = 125 + 200 * stateData[0];
+			if (isKeyDown(KEY_DOWN) && !keydown[KEY_DOWN]) {
+				stateData[0] = (stateData[0] + 1) % 3;
+				keydown[KEY_DOWN] = true;
+			}
+			if (!isKeyDown(KEY_DOWN)) {
+				keydown[KEY_DOWN] = false;
+			}
+			if (isKeyDown(KEY_UP) && !keydown[KEY_UP]) {
+				stateData[0] = (stateData[0] - 1) % 4;
+				keydown[KEY_UP] = true;
+			}
+			if (!isKeyDown(KEY_UP)) {
+				keydown[KEY_UP] = false;
+			}
+			while(stateData[0] < 0)
+				stateData[0] += 3;
 		}
 	}
 
