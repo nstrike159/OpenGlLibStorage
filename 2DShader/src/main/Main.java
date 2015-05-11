@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import interfaces.Book;
 
+import java.io.IOException;
 import java.util.*;
 
 import org.lwjgl.LWJGLException;
@@ -13,7 +14,6 @@ import org.lwjgl.util.vector.Vector2f;
 import books.Books;
 import packet.UDPClient;
 import render.*;
-
 import static org.lwjgl.input.Keyboard.*;
 
 public class Main {
@@ -282,7 +282,7 @@ public class Main {
 		Display.sync(60);
 	}
 
-	private void initialize() {
+	private void initialize(){
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setTitle("Librarian");
@@ -291,7 +291,11 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		client = UDPClient.debugClient();
+		try {
+			client = UDPClient.debugClient();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		client.books.add(new Books());
 
