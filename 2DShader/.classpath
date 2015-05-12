@@ -15,5 +15,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lwjgl-2.9.1/lwjgl-2.9.1/jar/lzma.jar"/>
+	<classpathentry kind="lib" path="Jexxus-1.42.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

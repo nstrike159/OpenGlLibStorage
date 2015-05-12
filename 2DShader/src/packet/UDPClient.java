@@ -1,8 +1,15 @@
 package packet;
 
+import java.io.IOException;
+
+import jexxus.client.ClientConnection;
+import jexxus.common.Connection;
+import jexxus.common.ConnectionListener;
+import jexxus.common.Delivery;
+import jexxus.server.ServerConnection;
 import interfaces.Book;
 
-import java.io.IOException;
+/*import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -88,10 +95,9 @@ public class UDPClient extends Thread{
 		byte[] data = dat.getBytes();
 		//Set the data length to 1024
 		byte[] data1=new byte[1024];
-		List<Byte> d=new ArrayList<Byte>();
-		for(byte i:data)
-			d.add(i);
-		data=(d.subList(0, 1024).toArray());
+		for(int i=0;i<data.length;i++)
+			data1[i]=data[i];
+		
 		DatagramPacket p=new DatagramPacket(data1,1024,MULTI_ADDR,port);
 		mSock.send(p);
 	}
@@ -118,5 +124,20 @@ public class UDPClient extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+}*/
+public class UDPClient {
+	DebugConnectionListener DCL=new DebugConnectionListener();
+	public static void main(String[] args){
+		new UDPClient();
+	}
+	public UDPClient() {
+		ClientConnection conn = new ClientConnection(new DebugConnectionListener(), "localhost", 15652, 15652, false);
+		try {
+			conn.connect();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		conn.send("Hello UDP".getBytes(), Delivery.UNRELIABLE);
 	}
 }

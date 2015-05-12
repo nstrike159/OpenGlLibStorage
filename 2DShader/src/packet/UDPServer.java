@@ -1,5 +1,8 @@
 package packet;
 
+import jexxus.server.Server;
+
+/*
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -25,10 +28,10 @@ public class UDPServer {
 		}
 	}
 	/**Creates the MulticastSocket
-	 * @throws IOException */
+	 * @throws IOException *//*
 	private void initVar() throws IOException{
 		System.out.println("Setting Variables");
-		multiS=new MulticastSocket(port);
+		multiS=new MulticastSocket(1987);
 		try{
 			MULTI_ADDR = InetAddress.getByName("224.0.0.3");
 			local=InetAddress.getLocalHost();
@@ -57,10 +60,11 @@ public class UDPServer {
 		@Override
 		public void run() {
 			while(true){
-				byte[] mByte=maxByte.clone();
-				DatagramPacket p1=new DatagramPacket(mByte, mByte.length);
+				byte[] mByte=new byte[1024];
+				DatagramPacket p1=new DatagramPacket(mByte,mByte.length);
 				try {
 					mSockS.receive(p1);
+					System.out.println("Found");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -74,10 +78,12 @@ public class UDPServer {
 		@Override
 		public void run() {
 			while(true){
-				byte[] mByte=maxByte.clone();
-				DatagramPacket p1=new DatagramPacket(mByte, mByte.length);
+				byte[] mByte=new byte[1024];
+				DatagramPacket p1=new DatagramPacket(mByte,mByte.length);
+				
 				try {
 					multiS.receive(p1);
+					System.out.println("Found");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -87,11 +93,11 @@ public class UDPServer {
 	};
 	
 	/**Sends DatagramPacket to MulticastSocket
-	 * @param toSend String to send to MulticastSocket received by all connected to MulticastSocket group*/
+	 * @param toSend String to send to MulticastSocket received by all connected to MulticastSocket group*//*
 	@SuppressWarnings("unused")
 	private boolean sendData(String toSend) {
 		byte[] buf = toSend.getBytes();
-		DatagramPacket p1 = new DatagramPacket(buf, 1025);
+		DatagramPacket p1 = new DatagramPacket(buf, 1024);
 		if(multiS.isConnected())
 			try {
 				multiS.send(p1);
@@ -101,7 +107,7 @@ public class UDPServer {
 			}
 		return false;
 	}
-	/**Receives DatagramPacket from client*/
+	/**Receives DatagramPacket from client*//*
 	private void recvDat(DatagramPacket p){
 		String data = new String(p.getData()).trim();
 		String id = data.substring(0,1);
@@ -111,5 +117,14 @@ public class UDPServer {
 	}
 	public static void main(String[] args){
 		new UDPServer();
+	}
+}*/
+public class UDPServer{
+	public static void main(String[] args){
+		new UDPServer();	
+	}
+	 public UDPServer() {
+		 Server server = new Server(new DebugConnectionListener(), 15652, 15652, false);
+		 server.startServer();
 	}
 }
