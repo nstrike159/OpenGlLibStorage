@@ -1,7 +1,11 @@
 package packet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import entity.AABB;
+import entity.Player;
 import jexxus.client.ClientConnection;
 import jexxus.common.Connection;
 import jexxus.common.ConnectionListener;
@@ -127,17 +131,33 @@ public class UDPClient extends Thread{
 	}
 }*/
 public class UDPClient {
-	DebugConnectionListener DCL=new DebugConnectionListener();
-	public static void main(String[] args){
-		new UDPClient();
-	}
+	private static ClientListener DCL=new ClientListener();
+	private static ClientConnection conn;
+	public String[] chat=new String[4];
+	public Player[] players=new Player[9];
+	public AABB[] map;
+	public static List<Book> books = new ArrayList<Book>();
 	public UDPClient() {
-		ClientConnection conn = new ClientConnection(new DebugConnectionListener(), "localhost", 15652, 15652, false);
+	
+	}
+	public static boolean connect(String ip){
+		conn = new ClientConnection(DCL, ip, 15652, 15652, false);
 		try {
 			conn.connect();
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
-		conn.send("Hello UDP".getBytes(), Delivery.UNRELIABLE);
+		return true;
+	}
+	public static UDPClient debugClient() {
+		return(new UDPClient());
+	}
+	public static boolean send(String dat){
+		if((conn.isConnected())){
+			conn.send(dat.getBytes(), Delivery.RELIABLE);
+			return true;
+		}
+		return false;
 	}
 }

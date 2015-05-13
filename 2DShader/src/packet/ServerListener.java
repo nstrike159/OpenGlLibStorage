@@ -4,22 +4,17 @@ import jexxus.common.Connection;
 import jexxus.common.ConnectionListener;
 import jexxus.server.ServerConnection;
 
-public class DebugConnectionListener implements ConnectionListener{
+public class ServerListener implements ConnectionListener{
 	@Override
 	public void connectionBroken(Connection broken, boolean forced) {
-		// TODO Auto-generated method stub
-		
+		UDPServer.removeClient(broken);
 	}
 
 	@Override
 	public void receive(byte[] data, Connection from) {
-		System.out.println(new String(data));
-		
+		UDPServer.addClient(from);	
 	}
 
 	@Override
-	public void clientConnected(ServerConnection conn) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void clientConnected(ServerConnection conn) {}
 }

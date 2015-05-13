@@ -2,6 +2,7 @@ package books;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import interfaces.Book;
 public class Books implements Book{
 	private long duedate;
@@ -17,6 +18,25 @@ public class Books implements Book{
 	@Override
 	public long getISBN() {
 		return ISBN;
+	}
+	public String getData(){
+		String data="duedate:"+duedate+" checkoutdate:"+checkoutdate+" ISBN:"+ISBN+" state:"+state+" cost:"+cost+" gnere:"+genre+" name:"+name+" author:"+author+" body:"+body+" pagelength:"+pagelength;
+		return data;
+	}
+	public Books(long duedate, long checkoutdate, long iSBN, int state,
+			double cost, String genre, String name, String author, String body,
+			int pagelength) {
+		super();
+		this.duedate = duedate;
+		this.checkoutdate = checkoutdate;
+		ISBN = iSBN;
+		this.state = state;
+		this.cost = cost;
+		this.genre = genre;
+		this.name = name;
+		this.author = author;
+		this.body = body;
+		this.pagelength = pagelength;
 	}
 
 	@Override
@@ -83,5 +103,6 @@ public class Books implements Book{
 		state=State;
 		return state;
 	}
+	
 
 }

@@ -282,7 +282,7 @@ public class Main {
 		Display.sync(60);
 	}
 
-	private void initialize(){
+	private void initialize() throws IOException{
 		try {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setTitle("Librarian");
@@ -291,11 +291,7 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		try {
-			client = UDPClient.debugClient();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		client = UDPClient.debugClient();
 
 		client.books.add(new Books());
 
@@ -405,7 +401,12 @@ public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
 
-		main.initialize();
+		try {
+			main.initialize();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		while (!Display.isCloseRequested()) {
 			main.checkState();
