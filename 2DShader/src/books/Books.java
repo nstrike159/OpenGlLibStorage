@@ -39,6 +39,9 @@ public class Books implements Book{
 		this.pagelength = pagelength;
 	}
 
+	public Books() {
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	public double getCost() {
 		return cost;
