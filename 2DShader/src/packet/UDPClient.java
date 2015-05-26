@@ -4,14 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import entity.AABB;
-import entity.Player;
 import jexxus.client.ClientConnection;
 import jexxus.common.Connection;
 import jexxus.common.ConnectionListener;
 import jexxus.common.Delivery;
 import jexxus.server.ServerConnection;
-import interfaces.Book;
 
 /*import java.io.IOException;
 import java.net.DatagramPacket;
@@ -134,18 +131,14 @@ public class UDPClient {
 	private static ClientListener DCL=new ClientListener();
 	private static ClientConnection conn;
 	public String[] chat=new String[4];
-	public Player[] players=new Player[9];
-	public AABB[] map;
-	public static List<Book> books = new ArrayList<Book>();
 	public UDPClient() {
 	
 	}
 	public static boolean connect(String ip){
-		conn = new ClientConnection(DCL, ip, 15652, 15652, false);
 		try {
+			conn = new ClientConnection(DCL, ip, 15652, 15652, false);
 			conn.connect();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException | IllegalArgumentException e) {
 			return false;
 		}
 		return true;
@@ -156,6 +149,14 @@ public class UDPClient {
 	public static boolean send(String dat){
 		if((conn.isConnected())){
 			conn.send(dat.getBytes(), Delivery.RELIABLE);
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean send(byte[] dat){
+		if((conn.isConnected())){
+			conn.send(dat, Delivery.RELIABLE);
 			return true;
 		}
 		return false;

@@ -1,25 +1,35 @@
 package packet;
 
+import org.watson.renderapi.SimpleRender;
+
 import jexxus.common.Connection;
 import jexxus.common.ConnectionListener;
+import jexxus.common.Delivery;
 import jexxus.server.ServerConnection;
+
+import org.watson.renderapi.Readable;
+
+import static org.watson.lang.NewLang.*;
 
 public class ClientListener implements ConnectionListener{
 	@Override
 	public void connectionBroken(Connection broken, boolean forced) {
-		// TODO Auto-generated method stub
-		
+		exit(0);
 	}
 
 	@Override
 	public void receive(byte[] data, Connection from) {
-		System.out.println(new String(data));
+		Object parsed = DataParser.getSentData(data);
+		if(parsed instanceof Readable){
+			SimpleRender.addBook((Readable) parsed);
+		}else if(parsed instanceof Integer){
+			SimpleRender.removeBook((Integer) parsed);
+		}
 		
 	}
 
 	@Override
 	public void clientConnected(ServerConnection conn) {
-		// TODO Auto-generated method stub
 		
 	}
 }

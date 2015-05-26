@@ -7,11 +7,12 @@ import java.util.List;
 
 import javax.swing.plaf.SliderUI;
 
-import entity.Player;
 import jexxus.client.ClientConnection;
 import jexxus.common.Connection;
 import jexxus.common.Delivery;
 import jexxus.server.Server;
+
+import org.watson.renderapi.Readable;
 
 /*
  import java.io.IOException;
@@ -135,12 +136,12 @@ public class UDPServer {
 
 	private static Server server = new Server(sl, 15652, 15652, false);
 	private static List<Connection> conns = new ArrayList<Connection>();
-	private static Player[] plyrs=new Player[9];
+	public static List<Readable> library = new ArrayList<Readable>();
 	public static void main(String[] args) {
-		new UDPServer();
+		UDPServer.start();
 	}
 
-	public UDPServer() {
+	public static void start() {
 		server.startServer();
 	}
 
@@ -148,6 +149,14 @@ public class UDPServer {
 		boolean ret = true;
 		for (Connection i : conns) {
 			i.send(dat.getBytes(), Delivery.RELIABLE);
+		}
+		return ret;
+	}
+	
+	public static boolean send(byte[] dat) {
+		boolean ret = true;
+		for (Connection i : conns) {
+			i.send(dat, Delivery.RELIABLE);
 		}
 		return ret;
 	}
