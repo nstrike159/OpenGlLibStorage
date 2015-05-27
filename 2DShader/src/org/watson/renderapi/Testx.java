@@ -27,6 +27,7 @@ public class Testx {
 			exit(0);
 		}
 		if (!UDPClient.connect(s)){
+			System.out.println("Failed to connect. Starting own server.");
 			UDPServer.start();
 			UDPClient.connect("localhost");
 		};

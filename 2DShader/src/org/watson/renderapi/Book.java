@@ -29,38 +29,13 @@ public class Book implements Readable{
 	}
 	
 	@Override
-	public byte[] getContents() {
-		return contents.getBytes();
-	}
-	
-	@Override
 	public Vector3f getColor(){
 		return color;
 	}
 
 	@Override
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	@Override
-	public void setContents(byte[] contents) {
-		this.contents = new String(contents).trim();
-	}
-
-	@Override
-	public void setColor(Vector3f color) {
-		this.color = color;
-	}
-
-	@Override
 	public int getID() {
 		return id;
-	}
-
-	@Override
-	public void setID(int id) {
-		this.id = id;
 	}
 
 	@Override
@@ -76,6 +51,26 @@ public class Book implements Readable{
 	@Override
 	public int getType() {
 		return 0;
+	}
+
+	@Override
+	public String getContents() {
+		return contents;
+	}
+
+	@Override
+	public double[] getAudio() {
+		return null;
+	}
+
+	@Override
+	public void setID(int id) {
+		this.id = id;
+	}
+
+	@Override
+	public float getWidth() {
+		return 19;
 	}
 	
 }

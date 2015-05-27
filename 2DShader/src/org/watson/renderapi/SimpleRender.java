@@ -3,9 +3,11 @@ package org.watson.renderapi;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
+import org.watson.lang.StdAudio;
 
 import packet.DataParser;
 import packet.UDPClient;
@@ -112,7 +114,7 @@ public class SimpleRender {
 
 		if (isAdding) {
 			if(hasTitle){
-				SimpleText.drawString("Enter Contents. Press <TAB> to finish.", Display.getWidth()/2-150, Display.getHeight()-20);
+				SimpleText.drawString("Enter Contents or press <F4> to add audio(Unfinished). Press <TAB> to finish.", Display.getWidth()/2-300, Display.getHeight()-20);
 			}else{
 				SimpleText.drawString("Enter Title. Press <RETURN> or <TAB> to finish.", Display.getWidth()/2-200, Display.getHeight()-20);
 			}
@@ -160,14 +162,14 @@ public class SimpleRender {
 				glColor3f(read.getColor().x, read.getColor().y,
 						read.getColor().z);
 				glBegin(GL_QUADS);
-				glVertex2f(pos * mult + start, ypos);
-				glVertex2f(pos * mult + start, ypos + bookHeight);
-				glVertex2f(pos * mult + start + (mult - spacing), ypos
+				glVertex2f(pos + start, ypos);
+				glVertex2f(pos + start, ypos + bookHeight);
+				glVertex2f(pos + start + (mult - spacing), ypos
 						+ bookHeight);
-				glVertex2f(pos * mult + start + (mult - spacing), ypos);
+				glVertex2f(pos + start + (mult - spacing), ypos);
 				glEnd();
-				if (Mouse.getX() > pos * mult + start
-						&& Mouse.getX() < pos * mult + start + (mult - spacing)
+				if (Mouse.getX() > pos + start
+						&& Mouse.getX() < pos + start + (mult - spacing)
 						&& Mouse.getY() > ypos
 						&& Mouse.getY() < ypos + bookHeight) {
 					glColor3f(read.getColor().x, read.getColor().y, read.getColor().z);
@@ -179,6 +181,9 @@ public class SimpleRender {
 					if(read.getType() == 0)
 					SimpleText.drawString(new String(read.getContents()).trim(), 50,
 							Display.getHeight() - 100);
+					if(read.getType() == 1)
+						//playAudio
+						;
 					if (Mouse.isButtonDown(0)) {
 						addInv(new Book(read.getColor(), read.getTitle(),
 								new String(read.getContents()).trim(), read.getID(), true));
@@ -186,7 +191,7 @@ public class SimpleRender {
 					}
 				}
 			}
-			pos++;
+			pos+=read.getWidth();
 		}
 		pos = 0;
 		for (Readable read : inv) {
@@ -194,17 +199,17 @@ public class SimpleRender {
 				glColor3f(read.getColor().x, read.getColor().y,
 						read.getColor().z);
 				glBegin(GL_QUADS);
-				glVertex2f(pos * mult + start, ypos - bookShelfHeight
+				glVertex2f(pos + start, ypos - bookShelfHeight
 						- bookHeight - spacing * 2);
-				glVertex2f(pos * mult + start, ypos - bookShelfHeight - spacing
+				glVertex2f(pos + start, ypos - bookShelfHeight - spacing
 						* 2);
-				glVertex2f(pos * mult + start + (mult - spacing), ypos
+				glVertex2f(pos + start + (mult - spacing), ypos
 						- bookShelfHeight - spacing * 2);
-				glVertex2f(pos * mult + start + (mult - spacing), ypos
+				glVertex2f(pos + start + (mult - spacing), ypos
 						- bookShelfHeight - spacing * 2 - bookHeight);
 				glEnd();
-				if (Mouse.getX() > pos * mult + start
-						&& Mouse.getX() < pos * mult + start + (mult - spacing)
+				if (Mouse.getX() > pos + start
+						&& Mouse.getX() < pos + start + (mult - spacing)
 						&& Mouse.getY() > ypos - bookShelfHeight - spacing * 2
 								- bookHeight
 						&& Mouse.getY() < ypos - bookShelfHeight - spacing * 2) {
@@ -218,6 +223,11 @@ public class SimpleRender {
 					if(read.getType() == 0)
 					SimpleText.drawString(new String(read.getContents()).trim(), 50,
 							Display.getHeight() - 100);
+					if(read.getType() == 1){
+						if(Mouse.isButtonDown(1)){
+							
+						}
+					}
 					if (Mouse.isButtonDown(0)) {
 						byte[] sendable = DataParser.getSendableBook(read);
 						UDPClient.send(sendable);
@@ -225,7 +235,7 @@ public class SimpleRender {
 					}
 				}
 			}
-			pos++;
+			pos+=read.getWidth();
 		}
 
 		try {

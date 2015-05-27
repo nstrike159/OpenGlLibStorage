@@ -659,10 +659,31 @@ public class SimpleText {
 				GL11.glVertex2f(x + 1, y + 2);
 				x += 2;
 			} else if (c == ':') {
-				System.out.println(":");
 				GL11.glVertex2f(x + 1, y + 5);
 				GL11.glVertex2f(x + 1, y + 2);
 				x += 2;
+			} else if (c == '>') {
+				GL11.glVertex2f(x+1, y);
+				GL11.glVertex2f(x+1, y+8);
+				GL11.glVertex2f(x+2, y+1);
+				GL11.glVertex2f(x+2, y+7);
+				GL11.glVertex2f(x+3, y+2);
+				GL11.glVertex2f(x+3, y+6);
+				GL11.glVertex2f(x+4, y+3);
+				GL11.glVertex2f(x+4, y+5);
+				GL11.glVertex2f(x+5, y+4);
+				x += 6;
+			} else if (c == '<') {
+				GL11.glVertex2f(x+5, y);
+				GL11.glVertex2f(x+5, y+8);
+				GL11.glVertex2f(x+4, y+1);
+				GL11.glVertex2f(x+4, y+7);
+				GL11.glVertex2f(x+3, y+2);
+				GL11.glVertex2f(x+3, y+6);
+				GL11.glVertex2f(x+2, y+3);
+				GL11.glVertex2f(x+2, y+5);
+				GL11.glVertex2f(x+1, y+4);
+				x += 6;
 			} else if (c == '\n') {
 				y -= 10;
 				x = startX;

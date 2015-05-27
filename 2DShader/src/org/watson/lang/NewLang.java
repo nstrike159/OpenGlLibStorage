@@ -3,6 +3,8 @@ package org.watson.lang;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,11 +13,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import javax.swing.JOptionPane;
+import org.lwjgl.BufferUtils;
 
 public class NewLang {
 
 	public static final int stdout = 0, stderr = 1, NULL = 0;
+	private static final int WINDOWS = 0, LINUX = 1, MAC = 2, OTHER = 3;
+	private static final int os = getOS();
+	public static final boolean _WINDOWS_ = os == WINDOWS;
+	public static final boolean _MAC_ = os == MAC;
+	public static final boolean _LINUX_ = os == LINUX;
 
 	private static List<List<String>> streams = new ArrayList<List<String>>();
 
@@ -52,7 +59,7 @@ public class NewLang {
 		if (from < 0)
 			return;
 		for (String s : streams.get(from))
-			print(s, to);
+			print(s + "\n", to);
 	}
 
 	public static String[] shorten(String[] toShorten, int len) {
@@ -418,6 +425,10 @@ public class NewLang {
 			return detectedOS;
 		}
 	}
+	
+	private static int getOS(){
+		return OsCheck.getOperatingSystemType() == OSType.Windows ? WINDOWS : OsCheck.getOperatingSystemType() == OSType.Linux ? LINUX : OsCheck.getOperatingSystemType() == OSType.Linux ? LINUX : OTHER;
+	}
 
 	public static int exec(String command, int iostream, int errstream)
 			throws IOException {
@@ -436,8 +447,8 @@ public class NewLang {
 			print(line, errstream);
 		}
 
-		int retValue = cmdProc.exitValue();
-		return retValue;
+		//int retValue = cmdProc.exitValue();
+		return 0;
 	}
 
 	public static boolean isStreamEmpty(int stream) {
@@ -451,6 +462,20 @@ public class NewLang {
 		if(stream < 2)return "";
 		return streams.get(stream-2)
 				.get(pos);
+	}
+	
+	public static FloatBuffer sdifb(float[] data){
+		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length);
+		buf.put(data);
+		buf.flip();
+		return buf;
+	}
+	
+	public static IntBuffer sdiib(int[] data){
+		IntBuffer buf = BufferUtils.createIntBuffer(data.length);
+		buf.put(data);
+		buf.flip();
+		return buf;
 	}
 
 }

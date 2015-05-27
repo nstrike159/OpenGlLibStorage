@@ -1,10 +1,13 @@
 package packet;
 
+import static org.watson.lang.NewLang.exit;
+
+import java.nio.ByteBuffer;
+
 import org.lwjgl.util.vector.Vector3f;
+import org.watson.renderapi.AudioBook;
 import org.watson.renderapi.Book;
 import org.watson.renderapi.Readable;
-
-import static org.watson.lang.NewLang.*;
 
 public class DataParser {
 
@@ -71,32 +74,74 @@ public class DataParser {
 	public static Readable getSentBook(byte[] sent) {
 		String sent0 = new String(sent).trim().substring(1);
 		String[] sent1 = sent0.split("~");
-		try{
-		return (Readable)(
-				new Book(
-						new Vector3f(
-								Float.parseFloat(
-										sent1[0]
-												.split(",")[0]),
-				Float.parseFloat(sent1[0]
-						.split(",")[1]),
-				Float.parseFloat(sent1[0]
-						.split(",")[2]))
-						, sent1[1], 
-						sent1[2],
-				Integer.parseInt(sent1[3]), 
-				Integer.parseInt(sent1[4]) != 0));
-		}catch(Exception e){
+		int x = Integer.parseInt(sent1[0]);
+		try {
+			if (x == 0) {
+				return (Readable) (new Book(new Vector3f(
+						Float.parseFloat(sent1[1].split(",")[0]),
+						Float.parseFloat(sent1[1].split(",")[1]),
+						Float.parseFloat(sent1[1].split(",")[2])), sent1[2],
+						sent1[3], Integer.parseInt(sent1[4]),
+						Integer.parseInt(sent1[5]) != 0));
+			} else {
+				return (Readable) (new AudioBook(new Vector3f(
+						Float.parseFloat(sent1[1].split(",")[0]),
+						Float.parseFloat(sent1[1].split(",")[1]),
+						Float.parseFloat(sent1[1].split(",")[2])), sent1[2],
+						parseDoubleArray(sent1[3]), Integer.parseInt(sent1[4]),
+						Integer.parseInt(sent1[5]) != 0));
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
-			for(String s : sent1)
-			System.err.println(s);
+			for (String s : sent1)
+				System.err.println(s);
 			exit(-1);
 			return null;
 		}
 	}
-	
-	public static byte[] getSendableBook(Readable read){
-		String toSend = "b" + read.getColor().x + "," + read.getColor().y + "," + read.getColor().z + "~" + read.getTitle() + "~" + read.getContents() + "~" + read.getID() + "~" + (read.isThere() ? 1 : 0);
+
+	private static double[] parseDoubleArray(String data) {
+		String[] data0 = data.split("`");
+		double[] toret = new double[data0.length];
+		for (int i = 0; i < data0.length; i++) {
+			toret[i] = toDouble(data0[i].getBytes());
+		}
+		return toret;
+	}
+
+	private static String toDoubleArray(double[] data) {
+		String ifnale = "";
+
+		for (int i = 0; i < data.length; i++) {
+			ifnale += new String(toByteArray(data[i])).trim();
+		}
+
+		return ifnale;
+	}
+
+	private static byte[] toByteArray(double value) {
+		byte[] bytes = new byte[8];
+		ByteBuffer.wrap(bytes).putDouble(value);
+		return bytes;
+	}
+
+	private static double toDouble(byte[] bytes) {
+		return ByteBuffer.wrap(bytes).getDouble();
+	}
+
+	public static byte[] getSendableBook(Readable read) {
+		String toSend;
+		if (read.getType() == 0) {
+			toSend = "b" + read.getType() + "~" + read.getColor().x + ","
+					+ read.getColor().y + "," + read.getColor().z + "~"
+					+ read.getTitle() + "~" + read.getContents() + "~"
+					+ read.getID() + "~" + (read.isThere() ? 1 : 0);
+		} else {
+			toSend = "b" + read.getType() + "~" + read.getColor().x + ","
+					+ read.getColor().y + "," + read.getColor().z + "~"
+					+ read.getTitle() + "~" + toDoubleArray(read.getAudio()) + "~"
+					+ read.getID() + "~" + (read.isThere() ? 1 : 0);
+		}
 		return toSend.getBytes();
 	}
 
